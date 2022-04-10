@@ -1,0 +1,11 @@
+# (venv) pip3 install –r pip-requirements.txt 
+
+# ￼##### Requirements WITHOUT version-specific packages ####
+matplotlib
+numpy
+pandas
+scikit-learn
+
+# ￼#### Requirements WITH version-specific packages ####
+tensorflow > 2.0
+

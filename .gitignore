@@ -1,0 +1,7 @@
+# Ignore the following folders
+/data
+/venv
+
+# Ignore IDE specific files
+.idea/
+.vscode/
