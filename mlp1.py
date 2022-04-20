@@ -5,6 +5,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Activation
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -42,13 +44,16 @@ model = Sequential([
 	# Flatten(input_shape=(28, 28)),
 	
 	# dense layer 1
-	Dense(256, activation='relu'),
-	
+	Dense(60, activation='relu'),
+	Dropout(0.1),
+
 	# dense layer 2
-	Dense(128, activation='relu'),
+	Dense(25, activation='relu'),
+	Dropout(0.2),
 
   	# dense layer 3
-	# Dense(128, activation='relu'),
+	Dense(128, activation='relu'),
+	Dropout(0.2),
 
 	# dense layer 4
 	# Dense(64, activation='relu'),
@@ -61,8 +66,11 @@ model.compile(optimizer='adam',
 			loss='sparse_categorical_crossentropy',
 			metrics=['accuracy'])
 
+reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.5, patience=20, min_lr=0.1)
+
 model.fit(X_train, y_train, epochs=500,
-		batch_size=1000,
+		batch_size=32,
+		callbacks=[reduce_lr],
 		validation_split=0.2)
 
 results = model.evaluate(X_test, y_test, verbose = 0)
