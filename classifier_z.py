@@ -12,32 +12,26 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv('data/data_perm.txt', sep=" ", header=None,
+df1 = pd.read_csv('data/train_singleFileZ.csv', sep=",", header=None,
                 names=["category","az_d","el_d", "az_t", "el_t", "length","tension"])
 
-y = df["category"].to_numpy()
-# x = df[["az_d", "el_d", "az_t", "el_t", "tension"]].to_numpy()
-x = df[["az_d", "el_d", "az_t", "el_t", "length", "tension"]].to_numpy()
+
+x = df1[["az_d", "el_d", "az_t", "el_t", "length", "tension"]].to_numpy()
+y = df1[["category"]].to_numpy()
+
 
 # Cast the records into float values
-x = x.astype('float32')
-x = x.astype('int')
+x = np.asarray(x).astype(np.float32)
+y = np.asarray(y).astype(np.int)
 
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.70, random_state=42)
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.90, random_state=42)
 
 print("Feature matrix:", X_train.shape)
 print("Target matrix:", X_test.shape)
 print("Feature vector:", y_train.shape)
 print("Target vector:", y_test.shape)
 
-# fig, ax = plt.subplots(10, 10)
-# k = 0
-# for i in range(10):
-# 	for j in range(10):
-# 		ax[i][j].imshow(X_train[k].reshape(28, 28),
-# 						aspect='auto')
-# 		k += 1
-# plt.show()
 
 model = Sequential([
 	
@@ -45,23 +39,22 @@ model = Sequential([
 	# Flatten(input_shape=(28, 28)),
 	
 	# dense layer 1
-	Dense(60, activation='relu'),
+	Dense(8, activation='relu'),
 	Dropout(0.1),
 
-	# dense layer 2
-	Dense(25, activation='relu'),
+# 	# dense layer 2
+	Dense(16, activation='relu'),
 	Dropout(0.2),
 
-	Dropout(0.3),
   	# dense layer 3
-	Dense(128, activation='relu'),
-	Dropout(0.2),
+	Dense(32, activation='relu'),
+	Dropout(0.3),
 
-	# dense layer 4
-	# Dense(64, activation='relu'),
+# 	# dense layer 4
+# 	# Dense(64, activation='relu'),
 	
 	# output layer
-	Dense(3, activation='softmax'),
+	Dense(4, activation='softmax')
 ])
 
 model.compile(optimizer='adam',
@@ -77,3 +70,6 @@ model.fit(X_train, y_train, epochs=500,
 
 results = model.evaluate(X_test, y_test, verbose = 0)
 print('test loss, test acc:', results)
+
+model.save('models' + '/' +'classifier_z.hdf5')
+print(model.summary())
